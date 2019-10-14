@@ -1,0 +1,15 @@
+.item{
+  background-image:url(https://littlealchemy.com/img/library-background.png);
+}
+.item > h6 {
+  font-size: 10px;
+}
+.div-recipe > h6 {
+  font-size: 9px;
+}
+.div-recipe{
+ height: 15px;
+}
+.make-beautiful{
+  height: 5px;
+}

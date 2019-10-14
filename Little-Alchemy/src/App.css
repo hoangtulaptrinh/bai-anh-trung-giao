@@ -1,0 +1,31 @@
+.App{
+  display: flex;
+  text-align: center;
+  background-color: rgba(179, 163, 179, 0.2);
+}
+.item-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 1;
+  background-image:url(https://littlealchemy.com/img/library-background.png);
+  min-height: 100vh;
+  border: solid 1.5px #d6d6d7;
+}
+.total-target{
+  display: flex;
+  flex-direction: column;
+  width: 82%;
+  border: solid 1.5px #d6d6d7;
+}
+.drop-Target{
+  display: flex;
+  background-image:url(https://littlealchemy.com/img/workspace-background.png);
+  flex: 1;
+}
+.row{
+  margin-left: -25px !important;
+  margin-right: -25px !important;
+  margin-top: 5px !important; 
+  margin-bottom: 0px !important;
+}
