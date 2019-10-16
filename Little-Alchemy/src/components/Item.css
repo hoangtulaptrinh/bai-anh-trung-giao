@@ -3,3 +3,7 @@
   justify-content: space-around;
   align-items: center;
 }
+.btn-items{
+  margin-bottom: 1px;
+  width: 80px ;
+}

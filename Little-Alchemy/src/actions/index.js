@@ -10,4 +10,6 @@ export const followRecipe = (value) => { return { type: actionTypes.FOLLOW_RECIP
 
 export const remove_duplicate = () => { return { type: actionTypes.REMOVE_DUPLICATE } }
 
-export const FETCH_DATA = (obj) => { return { type:actionTypes.FETCH_DATA,obj:obj }}
+export const FETCH_DATA = (obj) => { return { type: actionTypes.FETCH_DATA, obj: obj } }
+
+export const createNewItems = (value) => { return { type: actionTypes.CREATE_NEW_ITEMS, value: value } }

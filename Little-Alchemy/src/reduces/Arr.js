@@ -1,5 +1,4 @@
 import actionTypes from '../const/actionTypes';
-import _ from 'lodash'
 var initialState = {
   Items: [],
   Target: []
@@ -37,39 +36,8 @@ var myReducer = (state = initialState, action) => {
 
     case actionTypes.FOLLOW_RECIPE:
 
-      if (action.value.idDrop < 4) {
-        state.Items = _.concat(state.Items,
-          {
-            id: state.Items.length,
-            name: action.value.name,
-            url: action.value.url,
-          });
-        state.Target = _.concat(state.Target,
-          {
-            id: state.Target.length,
-            name: action.value.name,
-            url: action.value.url,
-            recipe: state.Items[action.value.idDrag].name + '+' + state.Target[action.value.idDrop].name
-          })
-      }
-      else {
-        state.Items = _.concat(state.Items,
-          {
-            id: state.Items.length,
-            name: action.value.name,
-            url: action.value.url,
-          });
-        _.fill(state.Target,
-          {
-            id: action.value.idDrop,
-            name: action.value.name,
-            url: action.value.url,
-            recipe: state.Items[action.value.idDrag].name + '+' + state.Target[action.value.idDrop].name
-          }
-          , action.value.idDrop, action.value.idDrop + 1)
-      }
-
       return state;
+      
     default:
       return state;
   }

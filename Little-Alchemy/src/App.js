@@ -6,25 +6,46 @@ import { Container, Row, Col, Button } from 'reactstrap';
 import * as actions from './actions/index';
 import { connect } from 'react-redux';
 import axios from 'axios'
+import CreateNewItems from './components/createElements'
 class App extends Component {
 
   ChangeItems = (idDrag) => {
     var idDrop = this.props.IdDrop;
-
-    axios.post('/api/change',
+    axios.get('/api/change',
       {
-        nameItemDrag: this.props.Arr.Items[idDrag].name,
-        nameItemDrop: this.props.Arr.Target[idDrop].name
-      }).then(response => {
-        this.props.followRecipe(response.data.name, response.data.url, idDrag, idDrop)
-        this.props.removeDuplicate();
+        params: {
+          nameItemDrag: this.props.Arr.Items[idDrag].name,
+          nameItemDrop: this.props.Arr.Target[idDrop].name,
+          idDrop: idDrop,
+          idDrag: idDrag
+        }
+      })
+      .then(response => {
+        this.props.FETCH_DATA(response.data)
       }
       )
       .catch(function (error) {
         console.log(error);
       });
   }
+  deleteItems = (idDrag, nameDrag) => {
 
+    axios.delete('/api/change/delete',
+      {
+        params: {
+          id: idDrag,
+          name: nameDrag
+        }
+      })
+      .then(response => {
+        this.props.FETCH_DATA(response.data)
+      }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+
+  }
   updateIdDrop = idDrop => {
     this.props.updateID(idDrop);
   }
@@ -39,6 +60,7 @@ class App extends Component {
 
   componentDidMount() {
     axios.get('/api/getdata').then(result => this.props.FETCH_DATA(result.data))
+    console.log('componentDidMount App.js')
   }
 
   render() {
@@ -74,8 +96,9 @@ class App extends Component {
         </div>
 
         <div className="item-container">
+          <CreateNewItems />
           {Arr.Items.map((item, index) => (
-            <Item item={item} key={index} name={item.name} url={item.url} ChangeItems={(id) => this.ChangeItems(id)} />
+            <Item item={item} key={index} name={item.name} url={item.url} ChangeItems={(id) => this.ChangeItems(id)} deleteItems={() => this.deleteItems(item.id, item.name)} />
           ))}
         </div>
 
