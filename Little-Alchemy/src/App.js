@@ -5,62 +5,45 @@ import Item from './components/Item'
 import { Container, Row, Col, Button } from 'reactstrap';
 import * as actions from './actions/index';
 import { connect } from 'react-redux';
-import axios from 'axios'
 import CreateNewItems from './components/createElements'
+
+import * as callApi from './axios/axios'
+
 class App extends Component {
 
   ChangeItems = (idDrag) => {
     var idDrop = this.props.IdDrop;
-    axios.get('/api/change',
-      {
-        params: {
-          nameItemDrag: this.props.Arr.Items[idDrag].name,
-          nameItemDrop: this.props.Arr.Target[idDrop].name,
-          idDrop: idDrop,
-          idDrag: idDrag
-        }
-      })
-      .then(response => {
-        this.props.FETCH_DATA(response.data)
-      }
-      )
-      .catch(function (error) {
-        console.log(error);
-      });
+    var objChange = {
+      nameItemDrag: this.props.Arr.Items[idDrag].name,
+      nameItemDrop: this.props.Arr.Target[idDrop].name,
+      idDrop: idDrop,
+      idDrag: idDrag
+    };
+    callApi.Params('/api/change', 'get', objChange).then(response => this.props.FETCH_DATA(response.data))
   }
+
   deleteItems = (idDrag, nameDrag) => {
+    var objDelete = {
+      id: idDrag,
+      name: nameDrag
+    }
 
-    axios.delete('/api/change/delete',
-      {
-        params: {
-          id: idDrag,
-          name: nameDrag
-        }
-      })
-      .then(response => {
-        this.props.FETCH_DATA(response.data)
-      }
-      )
-      .catch(function (error) {
-        console.log(error);
-      });
-
+    callApi.Params('/api/change/delete', 'delete', objDelete).then(response => this.props.FETCH_DATA(response.data))
   }
   updateIdDrop = idDrop => {
     this.props.updateID(idDrop);
   }
 
   reset = () => {
-    this.props.reset();
+    callApi.Params('/api/change/reset', 'get', null).then(response => this.props.FETCH_DATA(response.data))
   }
 
   hardReset = () => {
-    this.props.hardReset();
+    callApi.Params('/api/change/hardreset', 'get', null).then(response => this.props.FETCH_DATA(response.data))
   }
 
   componentDidMount() {
-    axios.get('/api/getdata').then(result => this.props.FETCH_DATA(result.data))
-    console.log('componentDidMount App.js')
+    callApi.Params('/api/getdata', 'get', null).then(response => this.props.FETCH_DATA(response.data))
   }
 
   render() {
@@ -115,11 +98,8 @@ const mapStatetoProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    reset: () => dispatch(actions.reset()),
-    hardReset: () => dispatch(actions.hardReset()),
     updateID: (idDrop) => dispatch(actions.updateID({ idDrop: idDrop })),
     followRecipe: (name, url, idDrag, idDrop) => dispatch(actions.followRecipe({ name: name, url: url, idDrag: idDrag, idDrop: idDrop })),
-    removeDuplicate: () => dispatch(actions.remove_duplicate()),
     FETCH_DATA: (data) => dispatch(actions.FETCH_DATA({ data: data }))
   }
 }

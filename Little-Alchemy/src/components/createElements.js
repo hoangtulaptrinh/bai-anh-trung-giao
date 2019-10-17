@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, } from 'reactstrap';
 import * as actions from '../actions/index';
 import { connect } from 'react-redux';
-import axios from 'axios'
+import * as callApi from '../axios/axios'
 
 const CreateNewItems = (props) => {
     const {
@@ -18,46 +18,38 @@ const CreateNewItems = (props) => {
     const toggle = () => setModal(!modal);
 
     const createNewItem = () => {
-        axios.post('/api/change/create', {
+        var objCreate = {
             name: name,
             url: url
-        })
-            .then(toggle())
-            .then(response => {
-                FETCH_DATA(response.data)
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-
+        }
+        callApi.Data('/api/change/create', 'post', objCreate).then(toggle()).then(response => FETCH_DATA(response.data))
     };
 
 
-return (
-    <div>
-        <Button outline color="primary" onClick={toggle}>
-            Become A God{buttonLabel}
-        </Button>
-        <Modal isOpen={modal} toggle={toggle} className={className}>
-            <ModalHeader toggle={toggle}>You Are The Lord, Please Prove Your Strength</ModalHeader>
-            <ModalBody>
-                <FormGroup>
-                    <Label >Name</Label>
-                    <Input placeholder="Write the name of the element you want to create" onChange={e => setName(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label >Url</Label>
-                    <Input placeholder="Write the image path of the element you want to create" onChange={e => setUrl(e.target.value)} />
-                </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-                <Button color="primary" onClick={createNewItem}>Create</Button>{' '}
-                <Button color="secondary" onClick={toggle}>Cancel</Button>
-            </ModalFooter>
-        </Modal>
-    </div>
-);
+    return (
+        <div>
+            <Button outline color="primary" onClick={toggle}>
+                Become A God{buttonLabel}
+            </Button>
+            <Modal isOpen={modal} toggle={toggle} className={className}>
+                <ModalHeader toggle={toggle}>You Are The Lord, Please Prove Your Strength</ModalHeader>
+                <ModalBody>
+                    <FormGroup>
+                        <Label >Name</Label>
+                        <Input placeholder="Write the name of the element you want to create" onChange={e => setName(e.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label >Url</Label>
+                        <Input placeholder="Write the image path of the element you want to create" onChange={e => setUrl(e.target.value)} />
+                    </FormGroup>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={createNewItem}>Create</Button>{' '}
+                    <Button color="secondary" onClick={toggle}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
+        </div>
+    );
 
 }
 
@@ -70,7 +62,6 @@ const mapStatetoProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewItems: (name, url) => dispatch(actions.createNewItems({ name, url })),
         FETCH_DATA: (data) => dispatch(actions.FETCH_DATA({ data: data })),
     }
 }

@@ -6,6 +6,7 @@ const _ = require('lodash')
 const objData = require('./data/objData')
 const recipes = require('./data/recipes')
 const elements = require('./data/newElements')
+const originObjData = require('./data/originObjData')
 
 app.get('/', (req, res) => {
   res.send('hello from server!')
@@ -98,7 +99,7 @@ app.delete('/api/change/delete', (req, res) => {
 
   _.forEach(objData.Items, (item, index) => {
     if (index > req.query.id) {
-      item.id = item.id -1;
+      item.id = item.id - 1;
     }
   });
 
@@ -107,6 +108,7 @@ app.delete('/api/change/delete', (req, res) => {
   });
 
   res.json(objData)
+
 })
 
 app.patch('/api/change/change', (req, res) => {
@@ -119,6 +121,17 @@ app.patch('/api/change/change', (req, res) => {
     }
     , req.body.id, req.body.id + 1)
 
+  res.json(objData)
+})
+
+app.get('/api/change/reset', (req, res) => {
+  objData.Target = originObjData.Target;
+  res.json(objData)
+})
+
+app.get('/api/change/hardreset', (req, res) => {
+  objData.Items = originObjData.Items;
+  objData.Target = originObjData.Target;
   res.json(objData)
 })
 
