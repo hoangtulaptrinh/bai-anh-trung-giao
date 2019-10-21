@@ -19,7 +19,7 @@ class App extends Component {
       idDrop: idDrop,
       idDrag: idDrag
     };
-    callApi.Params('/api/change', 'get', objChange).then(response => this.props.FETCH_DATA(response.data))
+    callApi.Params('/api/getnewitem', 'get', objChange).then(response => this.props.FETCH_DATA(response.data))
   }
 
   deleteItems = (idDrag, nameDrag) => {

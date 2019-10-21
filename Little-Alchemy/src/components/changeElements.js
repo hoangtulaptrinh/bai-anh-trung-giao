@@ -25,7 +25,7 @@ const ChangeItem = (props) => {
       url: url
     }
 
-    callApi.Data('/api/change/change', 'patch', objChange).then(toggle()).then(response => FETCH_DATA(response.data))
+    callApi.Data('/api/changeitem', 'patch', objChange).then(toggle()).then(response => FETCH_DATA(response.data))
 
   };
 

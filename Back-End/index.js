@@ -3,10 +3,10 @@ var bodyParser = require('body-parser')
 const app = express()
 app.use(bodyParser.json())
 const _ = require('lodash')
-const objData = require('./data/objData')
-const recipes = require('./data/recipes')
-const elements = require('./data/newElements')
-const originObjData = require('./data/originObjData')
+var objData = require('./data/objData')
+var recipes = require('./data/recipes')
+var elements = require('./data/newElements')
+var originObjData = require('./data/originObjData')
 
 app.get('/', (req, res) => {
   res.send('hello from server!')
@@ -16,8 +16,8 @@ app.get('/api/getdata', (req, res) => {
   res.json(objData)
 })
 
-app.get('/api/change', (req, res) => {
-
+app.get('/api/getnewitem', (req, res) => {
+  var idDrop = Number(req.query.idDrop);
   const nameDrag = req.query.nameItemDrag;
   const nameDrop = req.query.nameItemDrop;
   var objDrag = _.find(recipes, { [nameDrag]: {} }); //obj có key là nguyên tố đang kéo ra
@@ -29,36 +29,31 @@ app.get('/api/change', (req, res) => {
     e = _.findIndex(elements, function (o) { return o.name === objDrop[nameDrop][nameDrag] });
   }
   if (e != -1) {
-    if (req.query.idDrop < 4) {
-      objData.Items = _.concat(objData.Items,
-        {
-          id: objData.Items.length,
-          name: elements[e].name,
-          url: elements[e].url,
-        });
+    var newItemsObj = {
+      id: objData.Items.length,
+      name: elements[e].name,
+      url: elements[e].url,
+    }
+    if (idDrop < 4) {
+      objData.Items = _.concat(objData.Items, newItemsObj);
       objData.Target = _.concat(objData.Target,
         {
           id: objData.Target.length,
           name: elements[e].name,
           url: elements[e].url,
-          recipe: objData.Items[req.query.idDrag].name + '+' + objData.Target[req.query.idDrop].name
+          recipe: objData.Items[req.query.idDrag].name + '+' + objData.Target[idDrop].name
         })
     }
     else {
-      objData.Items = _.concat(objData.Items,
-        {
-          id: objData.Items.length,
-          name: elements[e].name,
-          url: elements[e].url,
-        });
+      objData.Items = _.concat(objData.Items, newItemsObj);
       _.fill(objData.Target,
         {
-          id: req.query.idDrop,
+          id: idDrop,
           name: elements[e].name,
           url: elements[e].url,
-          recipe: objData.Items[req.query.idDrag].name + '+' + objData.Target[req.query.idDrop].name
+          recipe: objData.Items[req.query.idDrag].name + '+' + objData.Target[idDrop].name
         }
-        , req.query.idDrop, req.query.idDrop + 1)
+        , idDrop, idDrop + 1)
     }
     const ids = new Set();
     const newItems = objData.Items.filter(e => {
@@ -73,7 +68,7 @@ app.get('/api/change', (req, res) => {
     res.json(objData)
   }
 })
-app.post('/api/change/create', (req, res) => {
+app.post('/api/createitem', (req, res) => {
   objData.Items = _.concat(objData.Items,
     {
       id: objData.Items.length,
@@ -96,13 +91,13 @@ app.post('/api/change/create', (req, res) => {
 })
 
 app.delete('/api/change/delete', (req, res) => {
-
-  _.forEach(objData.Items, (item, index) => {
+  //trừ id của từng item đi 1 kể từ item bị xóa để code hoạt động bình thường
+  _.forEach(objData.Items, (item, index) => { 
     if (index > req.query.id) {
       item.id = item.id - 1;
     }
   });
-
+  //xóa bỏ item cần xóa
   _.remove(objData.Items, function (item) {
     return item.name === req.query.name;
   });
@@ -111,7 +106,7 @@ app.delete('/api/change/delete', (req, res) => {
 
 })
 
-app.patch('/api/change/change', (req, res) => {
+app.patch('/api/changeitem', (req, res) => {
 
   _.fill(objData.Items,
     {
