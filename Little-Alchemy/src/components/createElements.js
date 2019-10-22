@@ -22,7 +22,7 @@ const CreateNewItems = (props) => {
       name: name,
       url: url
     }
-    callApi.Data('/api/createitem', 'post', objCreate).then(toggle()).then(response => FETCH_DATA(response.data))
+    callApi.Data('/api/create_item', 'post', objCreate).then(toggle()).then(response => FETCH_DATA(response.data))
   };
 
 

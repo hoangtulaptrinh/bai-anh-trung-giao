@@ -16,7 +16,7 @@ app.get('/api/getdata', (req, res) => {
   res.json(objData)
 })
 
-app.get('/api/getnewitem', (req, res) => {
+app.get('/api/get_new_item', (req, res) => {
   var idDrop = Number(req.query.idDrop);
   const nameDrag = req.query.nameItemDrag;
   const nameDrop = req.query.nameItemDrop;
@@ -41,7 +41,7 @@ app.get('/api/getnewitem', (req, res) => {
           id: objData.Target.length,
           name: elements[e].name,
           url: elements[e].url,
-          recipe: objData.Items[req.query.idDrag].name + '+' + objData.Target[idDrop].name
+          recipe: `${objData.Items[req.query.idDrag].name} + ${objData.Target[idDrop].name}`
         })
     }
     else {
@@ -51,7 +51,7 @@ app.get('/api/getnewitem', (req, res) => {
           id: idDrop,
           name: elements[e].name,
           url: elements[e].url,
-          recipe: objData.Items[req.query.idDrag].name + '+' + objData.Target[idDrop].name
+          recipe: `${objData.Items[req.query.idDrag].name} + ${objData.Target[idDrop].name}`
         }
         , idDrop, idDrop + 1)
     }
@@ -68,7 +68,7 @@ app.get('/api/getnewitem', (req, res) => {
     res.json(objData)
   }
 })
-app.post('/api/createitem', (req, res) => {
+app.post('/api/create_item', (req, res) => {
   objData.Items = _.concat(objData.Items,
     {
       id: objData.Items.length,
@@ -106,7 +106,7 @@ app.delete('/api/change/delete', (req, res) => {
 
 })
 
-app.patch('/api/changeitem', (req, res) => {
+app.patch('/api/change_item', (req, res) => {
 
   _.fill(objData.Items,
     {
