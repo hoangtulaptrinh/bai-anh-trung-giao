@@ -22,25 +22,34 @@ app.get('/api/get_new_item', (req, res) => {
   const nameDrop = req.query.nameItemDrop;
   var objDrag = _.find(recipes, { [nameDrag]: {} }); //obj có key là nguyên tố đang kéo ra
   var objDrop = _.find(recipes, { [nameDrop]: {} }); ////obj có key là nguyên tố bị thả vào
+  var arrElements;
+  var nameElements = '';
+  var urlElements = '';
   if (_.has(objDrag, [nameDrag, nameDrop]) === true) {
-    e = _.findIndex(elements, function (o) { return o.name === objDrag[nameDrag][nameDrop]; });
+    arrElements = _.filter(elements, function (o) { return o.name === objDrag[nameDrag][nameDrop]; });
+      nameElements = arrElements[0].name;
+      urlElements = arrElements[0].url;
   }
   if (_.has(objDrag, [nameDrag, nameDrop]) === false) {
-    e = _.findIndex(elements, function (o) { return o.name === objDrop[nameDrop][nameDrag] });
-  }
-  if (e != -1) {
-    var newItemsObj = {
-      id: objData.Items.length,
-      name: elements[e].name,
-      url: elements[e].url,
+    arrElements = _.filter(elements, function (o) { return o.name === objDrop[nameDrop][nameDrag] });
+    if (arrElements.length === 1) {
+      nameElements = arrElements[0].name;
+      urlElements = arrElements[0].url;
     }
+  }
+  var newItemsObj = {
+    id: objData.Items.length,
+    name: nameElements,
+    url: urlElements,
+  }
+   if (arrElements.length === 1) {
     if (idDrop < 4) {
       objData.Items = _.concat(objData.Items, newItemsObj);
       objData.Target = _.concat(objData.Target,
         {
           id: objData.Target.length,
-          name: elements[e].name,
-          url: elements[e].url,
+          name: nameElements,
+          url: urlElements,
           recipe: `${objData.Items[req.query.idDrag].name} + ${objData.Target[idDrop].name}`
         })
     }
@@ -49,8 +58,8 @@ app.get('/api/get_new_item', (req, res) => {
       _.fill(objData.Target,
         {
           id: idDrop,
-          name: elements[e].name,
-          url: elements[e].url,
+          name: nameElements,
+          url: urlElements,
           recipe: `${objData.Items[req.query.idDrag].name} + ${objData.Target[idDrop].name}`
         }
         , idDrop, idDrop + 1)
@@ -66,7 +75,7 @@ app.get('/api/get_new_item', (req, res) => {
     });
     objData.Items = newItems;
     res.json(objData)
-  }
+   }
 })
 app.post('/api/create_item', (req, res) => {
   objData.Items = _.concat(objData.Items,
@@ -92,7 +101,7 @@ app.post('/api/create_item', (req, res) => {
 
 app.delete('/api/change/delete', (req, res) => {
   //trừ id của từng item đi 1 kể từ item bị xóa để code hoạt động bình thường
-  _.forEach(objData.Items, (item, index) => { 
+  _.forEach(objData.Items, (item, index) => {
     if (index > req.query.id) {
       item.id = item.id - 1;
     }
