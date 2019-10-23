@@ -23,33 +23,25 @@ app.get('/api/get_new_item', (req, res) => {
   var objDrag = _.find(recipes, { [nameDrag]: {} }); //obj có key là nguyên tố đang kéo ra
   var objDrop = _.find(recipes, { [nameDrop]: {} }); ////obj có key là nguyên tố bị thả vào
   var arrElements;
-  var nameElements = '';
-  var urlElements = '';
   if (_.has(objDrag, [nameDrag, nameDrop]) === true) {
-    arrElements = _.filter(elements, function (o) { return o.name === objDrag[nameDrag][nameDrop]; });
-      nameElements = arrElements[0].name;
-      urlElements = arrElements[0].url;
+    arrElements = _.find(elements, (val) => val.name == objDrag[nameDrag][nameDrop]);
   }
   if (_.has(objDrag, [nameDrag, nameDrop]) === false) {
-    arrElements = _.filter(elements, function (o) { return o.name === objDrop[nameDrop][nameDrag] });
-    if (arrElements.length === 1) {
-      nameElements = arrElements[0].name;
-      urlElements = arrElements[0].url;
+    arrElements = _.find(elements, (val) => val.name == objDrop[nameDrop][nameDrag]);
+  }
+  if (arrElements !== undefined) {
+    var newItemsObj = {
+      id: objData.Items.length,
+      name: arrElements.name,
+      url: arrElements.url,
     }
-  }
-  var newItemsObj = {
-    id: objData.Items.length,
-    name: nameElements,
-    url: urlElements,
-  }
-   if (arrElements.length === 1) {
     if (idDrop < 4) {
       objData.Items = _.concat(objData.Items, newItemsObj);
       objData.Target = _.concat(objData.Target,
         {
           id: objData.Target.length,
-          name: nameElements,
-          url: urlElements,
+          name: arrElements.name,
+          url: arrElements.url,
           recipe: `${objData.Items[req.query.idDrag].name} + ${objData.Target[idDrop].name}`
         })
     }
@@ -58,8 +50,8 @@ app.get('/api/get_new_item', (req, res) => {
       _.fill(objData.Target,
         {
           id: idDrop,
-          name: nameElements,
-          url: urlElements,
+          name: arrElements.name,
+          url: arrElements.url,
           recipe: `${objData.Items[req.query.idDrag].name} + ${objData.Target[idDrop].name}`
         }
         , idDrop, idDrop + 1)
@@ -75,7 +67,7 @@ app.get('/api/get_new_item', (req, res) => {
     });
     objData.Items = newItems;
     res.json(objData)
-   }
+  }
 })
 app.post('/api/create_item', (req, res) => {
   objData.Items = _.concat(objData.Items,
